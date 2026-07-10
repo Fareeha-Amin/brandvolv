@@ -9,7 +9,6 @@ import Hero from './components/Hero';
 import Services from './components/Services';
 import CaseStudies from './components/CaseStudies';
 import WebShowcase from './components/WebShowcase';
-import MemeCurve from './components/MemeCurve';
 import Testimonials from './components/Testimonials';
 import ContactForm from './components/ContactForm';
 import Footer from './components/Footer';
@@ -33,9 +32,6 @@ export default function App() {
 
         {/* Shopify & WordPress Portfolio grid */}
         <WebShowcase />
-
-        {/* Meme Marketing Exponential Curve with interactive slider */}
-        <MemeCurve />
 
         {/* Real Testimonials with interactive slider and visual rating indicators */}
         <Testimonials />

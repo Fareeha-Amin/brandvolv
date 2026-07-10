@@ -287,11 +287,20 @@ function BrandedTextFallback({ id, className, size = 'md' }: { id: string; class
       break;
     case 'jd-ceramics':
       icon = (
-        <svg className="w-full h-full text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
+        <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Two overlapping glossy ceramic tiles (diamonds) representing premium tiles & ceramics */}
+          <g transform="translate(50, 50) rotate(45)">
+            {/* Tile 1: Deep Navy Blue glazed tile */}
+            <rect x="-32" y="-32" width="40" height="40" rx="6" fill="#0d355a" opacity="0.95" />
+            <rect x="-32" y="-32" width="40" height="40" rx="6" stroke="#1e40af" strokeWidth="2" fill="none" />
+            
+            {/* Tile 2: Terracotta / Gold glazed tile overlapping */}
+            <rect x="-8" y="-8" width="40" height="40" rx="6" fill="#d97706" opacity="0.9" />
+            <rect x="-8" y="-8" width="40" height="40" rx="6" stroke="#f59e0b" strokeWidth="2" fill="none" />
+          </g>
+          {/* Monogram JD in high contrast on top */}
+          <text x="32" y="55" fill="#ffffff" fontFamily="'Inter', sans-serif" fontSize="24" fontWeight="900" letterSpacing="-1">J</text>
+          <text x="50" y="55" fill="#ffffff" fontFamily="'Inter', sans-serif" fontSize="24" fontWeight="900" letterSpacing="-1">D</text>
         </svg>
       );
       break;
@@ -352,16 +361,27 @@ function BrandedTextFallback({ id, className, size = 'md' }: { id: string; class
       break;
     case 'unfreaky':
       icon = (
-        <svg className="w-full h-full text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M8 12h8M12 8l-4 4 4 4" />
+        <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Smooth, thick lowercase "u" representing Unfreaky's custom typography, with a vibrant green sparkle */}
+          <path d="M 30,35 V 55 C 30,68 44,68 44,55 V 35 M 44,48 V 65" stroke="#14b8a6" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+          {/* A whimsical, glowing four-point star (sparkle) indicating high performance / freakishly good quality */}
+          <path d="M 72,42 C 72,48 76,52 82,52 C 76,52 72,56 72,62 C 72,56 68,52 62,52 C 68,52 72,48 72,42 Z" fill="#22c55e" />
+          {/* Subtle accent ring */}
+          <circle cx="50" cy="50" r="44" stroke="#1f2937" strokeWidth="2" strokeDasharray="4 4" className="opacity-40" />
         </svg>
       );
       break;
     case '7rclads':
       icon = (
-        <svg className="w-full h-full text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7" />
+        <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Architectural cladding panel grid background (subtle) */}
+          <path d="M 10,25 H 90 M 10,50 H 90 M 10,75 H 90 M 35,10 V 90 M 65,10 V 90" stroke="#1f2937" strokeWidth="1" className="opacity-30" />
+          
+          {/* Overlapping angular cladding sheets forming the numeral "7" in red */}
+          <path d="M 22,30 H 52 L 36,70" stroke="#ef4444" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+          
+          {/* Overlapping angular cladding sheets forming the letter "R" in metallic blue */}
+          <path d="M 52,42 V 70 M 52,42 C 52,30 70,30 70,42 C 70,54 52,54 52,54 L 68,70" stroke="#3b82f6" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
       break;
@@ -427,6 +447,9 @@ export default function BrandLogo({ id, className = '', variant = 'color', size 
   if (normalizedId === 'hello-noemie') {
     return <NoemieLogo size={size} className={className} />;
   }
+  if (normalizedId === 'jd-ceramics') {
+    return <BrandedTextFallback id={id} className={className} size={size} />;
+  }
   const domain = DOMAIN_MAP[normalizedId];
   const displayName = NAME_MAP[normalizedId] || id;
 
@@ -482,6 +505,50 @@ export default function BrandLogo({ id, className = '', variant = 'color', size 
       <span className={`${textClasses} text-white tracking-tight group-hover:text-emerald-400 transition-colors`}>
         {displayName}
       </span>
+    </div>
+  );
+}
+
+const MARQUEE_INFO: Record<string, { main: string; sub: string }> = {
+  'aurobella': { main: 'AUROBELLA', sub: 'BEAUTY SALON' },
+  'memsaheb': { main: 'MEMSAHEB', sub: 'GROUP' },
+  'mevyl': { main: 'MEVYL', sub: 'SOLID PERFUMES' },
+  'orangery': { main: 'ORANGERY', sub: 'CREATIVE' },
+  'dheerajs-metals': { main: 'DHEERAJ', sub: 'METALS' },
+  'jd-ceramics': { main: 'JD', sub: 'CERAMIC' },
+  'trikona': { main: 'TRIKONA', sub: 'PHARMA' },
+  'hello-noemie': { main: 'NOÉMIE', sub: '' },
+  'artista-prop-shop': { main: 'ARTISTA', sub: 'PROP SHOP' },
+  'goodricke-tea': { main: 'GOODRICKE', sub: 'TEA' },
+  'status-app': { main: 'STATUS', sub: 'APP' },
+  'digital-academy-360': { main: 'DIGITAL ACADEMY', sub: '360' },
+  'trayam': { main: 'TRAYAM', sub: 'VEGETARIAN' },
+  'smr-holdings': { main: 'SMR', sub: 'HOLDINGS' },
+};
+
+export function MarqueeLogo({ id, className = '' }: { id: string; className?: string; key?: string | number }) {
+  const normalizedId = id.toLowerCase();
+  
+  if (normalizedId === 'hello-noemie') {
+    return (
+      <div className={`flex items-center justify-center shrink-0 mx-6 ${className}`}>
+        <NoemieLogo size="sm" className="text-neutral-400 group-hover:text-white transition-colors h-11" />
+      </div>
+    );
+  }
+
+  const info = MARQUEE_INFO[normalizedId] || { main: id.toUpperCase().replace('-', ' '), sub: '' };
+
+  return (
+    <div className={`flex flex-col items-center justify-center text-center px-8 shrink-0 select-none cursor-default group ${className}`}>
+      <span className="font-sans font-medium text-neutral-400 text-sm sm:text-[15px] tracking-[0.25em] uppercase leading-none group-hover:text-white transition-colors duration-300">
+        {info.main}
+      </span>
+      {info.sub && (
+        <span className="text-[9px] text-neutral-600 tracking-[0.18em] uppercase mt-2 opacity-80 group-hover:text-neutral-400 group-hover:opacity-100 transition-all duration-300 font-medium">
+          {info.sub}
+        </span>
+      )}
     </div>
   );
 }

@@ -47,29 +47,35 @@ export default function CaseStudies() {
             We don't hide behind vanity metrics. Click any of the official client cards below to load their live campaign consoles and analyze the exact spend, reach, and conversions.
           </p>
         </div>
+      </div>
 
-        {/* Responsive Client Focus Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mb-12">
-          {CASE_STUDIES.map((study) => (
+      {/* Infinite Scrolling Marquee for Case Studies - Bleeds full-width */}
+      <div className="marquee-container mb-12 py-4 relative z-10">
+        {/* Left and Right Gradient Overlays for Fade Effect */}
+        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-48 bg-gradient-to-r from-[#030305] via-[#030305]/75 to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-48 bg-gradient-to-l from-[#030305] via-[#030305]/75 to-transparent z-20 pointer-events-none" />
+
+        <div className="marquee-content gap-6 sm:gap-8 px-4">
+          {[...CASE_STUDIES, ...CASE_STUDIES, ...CASE_STUDIES].map((study, idx) => (
             <motion.div
-              key={study.id}
+              key={`${study.id}-${idx}`}
               whileHover={{ y: -6 }}
               onClick={() => handleOpenConsole(study.id)}
-              className="flex flex-col justify-between bg-neutral-900/10 hover:bg-neutral-900/30 border border-neutral-800/80 hover:border-blue-500/50 rounded-3xl p-6 sm:p-8 backdrop-blur-sm transition-all cursor-pointer shadow-lg group relative overflow-hidden"
+              className="w-[300px] sm:w-[410px] shrink-0 flex flex-col justify-between bg-neutral-900/10 hover:bg-neutral-900/30 border border-neutral-800/80 hover:border-blue-500/50 rounded-3xl p-6 sm:p-8 backdrop-blur-sm transition-all cursor-pointer shadow-lg group relative overflow-hidden"
             >
               {/* Top ambient glow */}
               <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-blue-600/5 group-hover:bg-blue-600/15 blur-2xl transition-all duration-500" />
 
               <div>
                 {/* Header: Logo & Industry */}
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-800/40">
-                  <BrandLogo id={study.id} size="lg" />
-                  <span className="px-2.5 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-400 font-mono tracking-wide uppercase">
+                <div className="flex items-center justify-between gap-x-4 gap-y-2 flex-wrap mb-6 pb-4 border-b border-neutral-800/40">
+                  <BrandLogo id={study.id} size="lg" className="shrink-0" />
+                  <span className="px-2.5 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-400 font-mono tracking-wide uppercase shrink-0">
                     {study.industry}
                   </span>
                 </div>
 
-                <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6">
+                <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6 min-h-[3rem]">
                   {study.description}
                 </p>
 
@@ -79,7 +85,7 @@ export default function CaseStudies() {
                     <span className="text-[9px] font-bold text-neutral-500 font-mono tracking-wider uppercase">
                       SPEND (INR)
                     </span>
-                    <span className="text-sm sm:text-base font-bold text-white font-mono mt-0.5">
+                    <span className="text-xs sm:text-sm font-bold text-white font-mono mt-0.5">
                       {study.spend}
                     </span>
                   </div>
@@ -88,7 +94,7 @@ export default function CaseStudies() {
                     <span className="text-[9px] font-bold text-neutral-500 font-mono tracking-wider uppercase">
                       REACH / IMPR
                     </span>
-                    <span className="text-sm sm:text-base font-bold text-white font-mono mt-0.5">
+                    <span className="text-xs sm:text-sm font-bold text-white font-mono mt-0.5">
                       {study.reach || study.impressions}
                     </span>
                   </div>
@@ -97,7 +103,7 @@ export default function CaseStudies() {
                     <span className="text-[9px] font-bold text-neutral-500 font-mono tracking-wider uppercase">
                       CONVERSIONS
                     </span>
-                    <span className="text-sm sm:text-base font-bold text-emerald-400 font-mono mt-0.5">
+                    <span className="text-xs sm:text-sm font-bold text-emerald-400 font-mono mt-0.5">
                       {study.conversions}
                     </span>
                   </div>
@@ -106,7 +112,7 @@ export default function CaseStudies() {
                     <span className="text-[9px] font-bold text-neutral-500 font-mono tracking-wider uppercase">
                       EFFICIENCY
                     </span>
-                    <span className="text-sm sm:text-base font-bold text-indigo-400 font-mono mt-0.5 truncate">
+                    <span className="text-xs sm:text-sm font-bold text-indigo-400 font-mono mt-0.5">
                       {study.avgCpr || study.avgCpc}
                     </span>
                   </div>
@@ -122,7 +128,7 @@ export default function CaseStudies() {
                     {study.learnings.slice(0, 2).map((learning, idx) => (
                       <div key={idx} className="flex items-start gap-2">
                         <CheckCircle2 size={12} className="text-emerald-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-xs text-neutral-400 leading-normal line-clamp-2">
+                        <span className="text-xs text-neutral-400 leading-normal">
                           {learning}
                         </span>
                       </div>

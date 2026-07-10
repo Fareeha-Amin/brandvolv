@@ -10,7 +10,7 @@ export default function Header() {
       setIsScrolled(window.scrollY > 20);
 
       // Simple active section detection
-      const sections = ['services', 'case-studies', 'web-portfolio', 'meme-curve', 'testimonials', 'contact'];
+      const sections = ['services', 'case-studies', 'web-portfolio', 'testimonials', 'contact'];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -41,7 +41,6 @@ export default function Header() {
     { id: 'services', label: 'Services' },
     { id: 'case-studies', label: 'Case Studies' },
     { id: 'web-portfolio', label: 'Web Projects' },
-    { id: 'meme-curve', label: 'Viral Catalyst' },
     { id: 'testimonials', label: 'Testimonials' },
   ];
 
@@ -81,7 +80,7 @@ export default function Header() {
               onClick={() => scrollToSection('contact')}
               className="relative inline-flex items-center justify-center px-5 py-2.5 text-xs sm:text-sm font-semibold text-white bg-blue-600 rounded-full overflow-hidden transition-all duration-300 hover:bg-blue-500 hover:scale-[1.03] active:scale-[0.98] shadow-[0_4px_20px_rgba(37,99,235,0.4)] hover:shadow-[0_4px_25px_rgba(37,99,235,0.6)] group cursor-pointer"
             >
-              <span className="relative z-10">Book Free Audit</span>
+              <span className="relative z-10">Book a Strategy Call -&gt;</span>
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-indigo-500 via-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </button>
           </div>

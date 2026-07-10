@@ -300,16 +300,6 @@ export const WEB_PROJECTS: WebProject[] = [
     features: ['Custom subscription modules', 'Localized distribution shipping rules', 'Mobile-first card layouts'],
     url: 'https://goodricketea.com/'
   },
-  {
-    id: 'litchisiciliani',
-    name: 'Litchisiciliani',
-    type: 'Shopify',
-    description: 'A bespoke product showcase emphasizing regional authenticity, visual purity, and express shipping integrations.',
-    tag: 'Product Showcases',
-    metric: '-40% Bounce',
-    features: ['Staggered image grids', 'Bilingual language routing', 'Localized local delivery APIs'],
-    url: 'https://litchisiciliani.com/'
-  },
   // WordPress Wonders (Slide 8)
   {
     id: 'status-app',
@@ -320,26 +310,6 @@ export const WEB_PROJECTS: WebProject[] = [
     metric: '98/100 Core Web Vitals',
     features: ['Modern custom headless WordPress api', 'Sleek custom component interactions', 'Dynamic pricing calculators'],
     url: 'https://status.app'
-  },
-  {
-    id: 'adanium',
-    name: 'Adanium',
-    type: 'WordPress',
-    description: 'A polished service-industry funnel built to optimize the user journey from education to scheduled consultation.',
-    tag: 'Optimized User Journeys',
-    metric: '+85% Lead Gen',
-    features: ['Interactive question branching', 'Integrated CRM appointment booking', 'Micro-interaction scroll effects'],
-    url: 'https://adanium.net/'
-  },
-  {
-    id: 'encalories',
-    name: 'Encalories',
-    type: 'WordPress',
-    description: 'A pristine nutrition and wellness platform featuring clean white-space layouts, bespoke dietary filters, and robust UX flow.',
-    tag: 'Flawless UX Design',
-    metric: '4.6m Visitors/yr',
-    features: ['Dynamic recipe filters', 'Gutenberg-optimized speed', 'Custom responsive mobile drawer'],
-    url: 'https://encalories.com'
   },
   {
     id: 'glory-faith',
@@ -521,7 +491,6 @@ export const CLIENTS_MARQUEE = [
   'aurobella',
   'memsaheb',
   'mevyl',
-  'shiwangi-vijaywargiya',
   'orangery',
   'dheerajs-metals',
   'jd-ceramics',

@@ -1,8 +1,8 @@
 import React from 'react';
 import { CLIENTS_MARQUEE } from '../data';
-import { ArrowUpRight, ShieldCheck, Award, Zap } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck, Award, Zap, BarChart2, Target, Rocket, Users, Star } from 'lucide-react';
 import { motion } from 'motion/react';
-import BrandLogo from './BrandLogos';
+import BrandLogo, { MarqueeLogo } from './BrandLogos';
 
 export default function Hero() {
   const scrollToContact = () => {
@@ -35,7 +35,7 @@ export default function Hero() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs sm:text-sm font-semibold tracking-wide mb-8"
           >
             <Zap size={14} className="animate-pulse" />
-            <span>ARTISTRY + ALGORITHM</span>
+            <span>CREATIVE x PERFORMANCE</span>
           </motion.div>
 
           {/* Main Headline */}
@@ -46,9 +46,9 @@ export default function Hero() {
             className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.1] mb-8"
             style={{ fontFamily: '"Inter", sans-serif' }}
           >
-            We Don't Just Make You Look Good.{' '}
+            Building Brands That People Remember.{' '}
             <span className="block mt-2 bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              We Architect Your Market Dominance.
+              Creating Growth That Businesses Measure.
             </span>
           </motion.h1>
 
@@ -59,7 +59,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-base sm:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed mb-12"
           >
-            Brandvolv is an elite full-suite creative and performance marketing agency. We fuse breathtaking 3D/CGI visual storytelling with performance acquisition architectures engineered to multiply your ROI.
+            We help ambitious brands grow with strategy, creative content, performance marketing, websites, and conversion-focused campaigns designed to generate real business results.
           </motion.p>
 
           {/* Call to Actions */}
@@ -73,70 +73,124 @@ export default function Hero() {
               onClick={scrollToContact}
               className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-full shadow-lg shadow-blue-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>Get Your Free Audit ($1,000 Value)</span>
-              <ArrowUpRight size={18} />
+              <span>Book a Strategy Call -&gt;</span>
             </button>
             <button
               onClick={scrollToCaseStudies}
               className="w-full sm:w-auto px-8 py-4 bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 text-neutral-200 font-semibold rounded-full transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
-              See Real Performance Metrics
+              View Case Studies -&gt;
             </button>
           </motion.div>
 
-          {/* Trust points */}
+          {/* Stats Ribbon */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-neutral-400 border-t border-neutral-900 pt-10"
+            className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-6 gap-x-4 w-full border-t border-b border-neutral-900/60 py-6 mt-12 px-2"
           >
-            <div className="flex items-center gap-2">
-              <Award className="text-blue-500" size={16} />
-              <span>Full-Performance Guarantee</span>
+            {/* Item 1 */}
+            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
+                <BarChart2 size={18} className="text-neutral-300" />
+              </div>
+              <div className="text-left">
+                <div className="text-lg sm:text-xl font-bold text-white tracking-tight leading-none">₹12Cr+</div>
+                <div className="text-[10px] sm:text-xs text-neutral-500 font-medium mt-1.5 leading-none">Revenue Generated</div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="text-indigo-500" size={16} />
-              <span>Tested on over ₹5M+ Ad Spend</span>
+
+            <div className="hidden lg:block w-[1px] h-8 bg-neutral-900/80" />
+
+            {/* Item 2 */}
+            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
+                <Target size={18} className="text-neutral-300" />
+              </div>
+              <div className="text-left">
+                <div className="text-lg sm:text-xl font-bold text-white tracking-tight leading-none">₹3Cr+</div>
+                <div className="text-[10px] sm:text-xs text-neutral-500 font-medium mt-1.5 leading-none">Ad Spend Managed</div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Zap className="text-cyan-500" size={16} />
-              <span>0.2s High-Performance Websites</span>
+
+            <div className="hidden lg:block w-[1px] h-8 bg-neutral-900/80" />
+
+            {/* Item 3 */}
+            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
+                <Rocket size={18} className="text-neutral-300" />
+              </div>
+              <div className="text-left">
+                <div className="text-lg sm:text-xl font-bold text-white tracking-tight leading-none">100+</div>
+                <div className="text-[10px] sm:text-xs text-neutral-500 font-medium mt-1.5 leading-none">Campaigns Launched</div>
+              </div>
+            </div>
+
+            <div className="hidden lg:block w-[1px] h-8 bg-neutral-900/80" />
+
+            {/* Item 4 */}
+            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
+                <Users size={18} className="text-neutral-300" />
+              </div>
+              <div className="text-left">
+                <div className="text-lg sm:text-xl font-bold text-white tracking-tight leading-none">35+</div>
+                <div className="text-[10px] sm:text-xs text-neutral-500 font-medium mt-1.5 leading-none">Brands Served</div>
+              </div>
+            </div>
+
+            <div className="hidden lg:block w-[1px] h-8 bg-neutral-900/80" />
+
+            {/* Item 5 */}
+            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+              <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
+                <Star size={18} className="text-neutral-100 fill-white" />
+              </div>
+              <div className="text-left">
+                <div className="text-lg sm:text-xl font-bold text-white tracking-tight leading-none flex items-center gap-0.5">4.8★</div>
+                <div className="text-[10px] sm:text-xs text-neutral-500 font-medium mt-1.5 leading-none">Client Satisfaction</div>
+              </div>
             </div>
           </motion.div>
         </div>
       </div>
 
       {/* Infinite scrolling marquee of clients */}
-      <div className="relative mt-20 border-y border-neutral-900 bg-neutral-950/20 py-8 overflow-hidden backdrop-blur-sm">
-        {/* Gradients to fade out edges */}
-        <div className="absolute top-0 left-0 w-24 sm:w-48 h-full bg-gradient-to-r from-[#030305] to-transparent z-10 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-24 sm:w-48 h-full bg-gradient-to-l from-[#030305] to-transparent z-10 pointer-events-none" />
+      <div className="relative mt-24">
+        {/* Marquee Header */}
+        <div className="text-center mb-10">
+          <p className="text-[11px] sm:text-xs text-neutral-500 font-medium tracking-[0.2em] uppercase">
+            Trusted by ambitious brands across industries
+          </p>
+        </div>
 
-        <div className="flex w-max items-center animate-marquee whitespace-nowrap">
-          {/* First loop */}
-          <div className="flex gap-16 sm:gap-24 items-center shrink-0 pr-16 sm:pr-24">
-            {CLIENTS_MARQUEE.map((client, idx) => (
-              <div
-                key={`marquee-1-${idx}`}
-                className="flex items-center gap-3 cursor-default group"
-              >
-                <span className="text-neutral-700 font-mono text-xs select-none">✦</span>
-                <BrandLogo id={client} size="sm" className="opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300" />
-              </div>
-            ))}
-          </div>
-          {/* Second loop to make seamless */}
-          <div className="flex gap-16 sm:gap-24 items-center shrink-0 pr-16 sm:pr-24" aria-hidden="true">
-            {CLIENTS_MARQUEE.map((client, idx) => (
-              <div
-                key={`marquee-2-${idx}`}
-                className="flex items-center gap-3 cursor-default group"
-              >
-                <span className="text-neutral-700 font-mono text-xs select-none">✦</span>
-                <BrandLogo id={client} size="sm" className="opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300" />
-              </div>
-            ))}
+        <div className="relative border-y border-neutral-900 bg-neutral-950/20 py-10 overflow-hidden backdrop-blur-sm">
+          {/* Gradients to fade out edges */}
+          <div className="absolute top-0 left-0 w-24 sm:w-48 h-full bg-gradient-to-r from-[#030305] to-transparent z-10 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-24 sm:w-48 h-full bg-gradient-to-l from-[#030305] to-transparent z-10 pointer-events-none" />
+
+          <div className="flex w-max items-center animate-marquee whitespace-nowrap">
+            {/* First loop */}
+            <div className="flex gap-20 sm:gap-28 items-center shrink-0 pr-20 sm:pr-28">
+              {CLIENTS_MARQUEE.map((client, idx) => (
+                <MarqueeLogo
+                  key={`marquee-1-${idx}`}
+                  id={client}
+                  className="opacity-50 hover:opacity-100 transition-all duration-300 transform hover:scale-[1.02]"
+                />
+              ))}
+            </div>
+            {/* Second loop to make seamless */}
+            <div className="flex gap-20 sm:gap-28 items-center shrink-0 pr-20 sm:pr-28" aria-hidden="true">
+              {CLIENTS_MARQUEE.map((client, idx) => (
+                <MarqueeLogo
+                  key={`marquee-2-${idx}`}
+                  id={client}
+                  className="opacity-50 hover:opacity-100 transition-all duration-300 transform hover:scale-[1.02]"
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

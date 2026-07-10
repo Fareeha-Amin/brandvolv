@@ -74,9 +74,6 @@ export default function Footer() {
               <button onClick={() => scrollToSection('web-portfolio')} className="hover:text-white transition-colors cursor-pointer text-left self-center sm:self-start">
                 Web Development Showcase
               </button>
-              <button onClick={() => scrollToSection('meme-curve')} className="hover:text-white transition-colors cursor-pointer text-left self-center sm:self-start">
-                The Viral Catalyst Model
-              </button>
             </div>
           </div>
 

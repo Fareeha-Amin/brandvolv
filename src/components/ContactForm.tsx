@@ -23,7 +23,7 @@ export default function ContactForm() {
     // Validate phone number - check digits count
     const phoneClean = formData.phone.replace(/[^0-9]/g, '');
     if (phoneClean.length < 7 || phoneClean.length > 15) {
-      setPhoneError('Please enter a valid phone number (between 7 and 15 digits).');
+      setPhoneError('Please enter a valid phone number.');
       return;
     } else {
       setPhoneError('');
@@ -93,6 +93,15 @@ export default function ContactForm() {
             'Deploy culturally relevant, trend-hijacking meme formats through platform-native TikToks/Reels.',
             'Maximize ad placement efficiencies to drive brand visibility CPMs below ₹1.95 per 1,000 reached.',
             'Establish high-authority media PR backlinking structures to sustain long-term search dominance.'
+          ]
+        };
+      case 'website':
+        return {
+          title: 'High-Performance Bespoke Website Architecture',
+          bullets: [
+            'Architect a lightning-fast custom React/Vite layout to achieve a perfect 100/100 Google Lighthouse score.',
+            'Structure intuitive UI/UX navigation paths mapped directly to maximize direct conversion actions.',
+            'Integrate automated conversion tracking, SEO metadata schema, and robust server-side APIs.'
           ]
         };
       default:
@@ -368,6 +377,7 @@ export default function ContactForm() {
                       <option value="leads">Generate Pre-Qualified Active Leads (CRM Booking)</option>
                       <option value="clicks">Boost Content Clicks & Organic Keywords (Traffic/SEO)</option>
                       <option value="awareness">Build Massive Brand Awareness (Meme/PR/Viral)</option>
+                      <option value="website">Website Creation (High-Converting Landing Pages & Custom Dev)</option>
                     </select>
                   </div>
                 </div>
