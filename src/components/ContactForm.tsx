@@ -1,123 +1,166 @@
-import React, { useState } from 'react';
-import { Mail, ArrowRight, CheckCircle, Shield, Award, Sparkles, Send, Instagram, Phone, MessageCircle } from 'lucide-react';
-import { motion } from 'motion/react';
+import React, { useState } from "react";
+import {
+  Mail,
+  ArrowRight,
+  CheckCircle,
+  Shield,
+  Award,
+  Sparkles,
+  Send,
+  Instagram,
+  Phone,
+  MessageCircle,
+} from "lucide-react";
+import { motion } from "motion/react";
+import { db } from "../firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    website: '',
-    spend: '',
-    goal: 'sales',
-    message: ''
+    name: "",
+    phone: "",
+    email: "",
+    website: "",
+    spend: "",
+    goal: "sales",
+    message: "",
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [phoneError, setPhoneError] = useState('');
+  const [phoneError, setPhoneError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate phone number - check digits count
-    const phoneClean = formData.phone.replace(/[^0-9]/g, '');
+    // Validate phone number
+    const phoneClean = formData.phone.replace(/[^0-9]/g, "");
     if (phoneClean.length < 7 || phoneClean.length > 15) {
-      setPhoneError('Please enter a valid phone number.');
+      setPhoneError("Please enter a valid phone number.");
       return;
     } else {
-      setPhoneError('');
+      setPhoneError("");
     }
 
     setLoading(true);
 
     // Capture values directly from DOM in case pre-filled by calculator
-    const budgetInput = document.getElementById('form-ad-spend') as HTMLInputElement;
-    const goalInput = document.getElementById('form-primary-goal') as HTMLSelectElement;
+    const budgetInput = document.getElementById(
+      "form-ad-spend",
+    ) as HTMLInputElement;
+    const goalInput = document.getElementById(
+      "form-primary-goal",
+    ) as HTMLSelectElement;
 
     const finalSpend = budgetInput ? budgetInput.value : formData.spend;
     const finalGoal = goalInput ? goalInput.value : formData.goal;
 
-    setTimeout(() => {
-      setFormData(prev => ({
+    try {
+      await addDoc(collection(db, "leads"), {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        website: formData.website,
+        spend: finalSpend,
+        goal: finalGoal,
+        message: formData.message,
+        createdAt: serverTimestamp(),
+      });
+
+      // Update local state
+      setFormData((prev) => ({
         ...prev,
         spend: finalSpend,
-        goal: finalGoal
+        goal: finalGoal,
       }));
+
       setLoading(false);
       setIsSubmitted(true);
-    }, 1200);
+    } catch (error) {
+      console.error("Error saving lead:", error);
+      setLoading(false);
+      alert(
+        "Something went wrong while submitting your request. Please try again.",
+      );
+    }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   // Generate a custom tactical recommendation on-screen based on the user's selected goal:
   const getGoalRecommendation = (goalKey: string) => {
     switch (goalKey) {
-      case 'sales':
+      case "sales":
         return {
-          title: 'Direct-to-Consumer Sales Engine',
+          title: "Direct-to-Consumer Sales Engine",
           bullets: [
-            'Deploy WhatsApp Direct-to-Chat campaigns to bypass standard landing page checkout dropoffs.',
-            'Initiate meta ad Sandbox testing with 10+ interest ad sets to find target demographic groups.',
-            'Optimize shopify theme checkout friction to push site conversion rates above 3.5%.'
-          ]
+            "Deploy WhatsApp Direct-to-Chat campaigns to bypass standard landing page checkout dropoffs.",
+            "Initiate meta ad Sandbox testing with 10+ interest ad sets to find target demographic groups.",
+            "Optimize shopify theme checkout friction to push site conversion rates above 3.5%.",
+          ],
         };
-      case 'leads':
+      case "leads":
         return {
-          title: 'Hyper-Targeted Lead Generation Portal',
+          title: "Hyper-Targeted Lead Generation Portal",
           bullets: [
-            'Architect customized, multi-branch question funnels in WordPress to pre-qualify high-value leads.',
-            'Launch target-offer discount lead campaigns on Meta platforms matching Aurobella’s proven models.',
-            'Build automated CRM integrations with SMS triggers to contact newly submitted leads within 5 minutes.'
-          ]
+            "Architect customized, multi-branch question funnels in WordPress to pre-qualify high-value leads.",
+            "Launch target-offer discount lead campaigns on Meta platforms matching Aurobella’s proven models.",
+            "Build automated CRM integrations with SMS triggers to contact newly submitted leads within 5 minutes.",
+          ],
         };
-      case 'clicks':
+      case "clicks":
         return {
-          title: 'High-Intent Traffic Driver',
+          title: "High-Intent Traffic Driver",
           bullets: [
-            'Target high-purchase-intent long-tail keywords using SEO content velocities rather than empty vanity traffic.',
-            'Formulate Google PPC search campaigns with custom negative-keyword lists to block low-intent clicks.',
-            'Refactor technical core web vitals to load pages under 0.3s, dropping bounce rates by 40%.'
-          ]
+            "Target high-purchase-intent long-tail keywords using SEO content velocities rather than empty vanity traffic.",
+            "Formulate Google PPC search campaigns with custom negative-keyword lists to block low-intent clicks.",
+            "Refactor technical core web vitals to load pages under 0.3s, dropping bounce rates by 40%.",
+          ],
         };
-      case 'awareness':
+      case "awareness":
         return {
-          title: 'Viral Brand Awareness & Cult Hegemony',
+          title: "Viral Brand Awareness & Cult Hegemony",
           bullets: [
-            'Deploy culturally relevant, trend-hijacking meme formats through platform-native TikToks/Reels.',
-            'Maximize ad placement efficiencies to drive brand visibility CPMs below ₹1.95 per 1,000 reached.',
-            'Establish high-authority media PR backlinking structures to sustain long-term search dominance.'
-          ]
+            "Deploy culturally relevant, trend-hijacking meme formats through platform-native TikToks/Reels.",
+            "Maximize ad placement efficiencies to drive brand visibility CPMs below ₹1.95 per 1,000 reached.",
+            "Establish high-authority media PR backlinking structures to sustain long-term search dominance.",
+          ],
         };
-      case 'website':
+      case "website":
         return {
-          title: 'High-Performance Bespoke Website Architecture',
+          title: "High-Performance Bespoke Website Architecture",
           bullets: [
-            'Architect a lightning-fast custom React/Vite layout to achieve a perfect 100/100 Google Lighthouse score.',
-            'Structure intuitive UI/UX navigation paths mapped directly to maximize direct conversion actions.',
-            'Integrate automated conversion tracking, SEO metadata schema, and robust server-side APIs.'
-          ]
+            "Architect a lightning-fast custom React/Vite layout to achieve a perfect 100/100 Google Lighthouse score.",
+            "Structure intuitive UI/UX navigation paths mapped directly to maximize direct conversion actions.",
+            "Integrate automated conversion tracking, SEO metadata schema, and robust server-side APIs.",
+          ],
         };
       default:
         return {
-          title: 'Performance Growth Plan',
+          title: "Performance Growth Plan",
           bullets: [
-            'Consolidate current ad accounts to exit the Meta ad algorithm testing phase 2.5x faster.',
-            'Optimize landing page layout speed to stabilize client-acquisition cost boundaries.',
-            'Implement continuous analytics mapping and conversion API protocols.'
-          ]
+            "Consolidate current ad accounts to exit the Meta ad algorithm testing phase 2.5x faster.",
+            "Optimize landing page layout speed to stabilize client-acquisition cost boundaries.",
+            "Implement continuous analytics mapping and conversion API protocols.",
+          ],
         };
     }
   };
 
   return (
-    <section id="contact" className="relative py-24 bg-[#030305] border-t border-neutral-900 overflow-hidden">
+    <section
+      id="contact"
+      className="relative py-24 bg-[#030305] border-t border-neutral-900 overflow-hidden"
+    >
       {/* Background spotlights */}
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-blue-950/20 blur-[130px] pointer-events-none" />
 
@@ -132,7 +175,9 @@ export default function ContactForm() {
               Claim Your Free Growth Audit.
             </h3>
             <p className="text-neutral-400 text-sm sm:text-base leading-relaxed mb-8">
-              We don’t do dry sales calls. We’ll crawl your site, audit your ad manager, analyze your search rankings, and pitch you a tailored, highly specific growth plan. Completely free. No strings attached.
+              We don’t do dry sales calls. We’ll crawl your site, audit your ad
+              manager, analyze your search rankings, and pitch you a tailored,
+              highly specific growth plan. Completely free. No strings attached.
             </p>
 
             {/* Direct Response Guarantee Pillars */}
@@ -142,8 +187,13 @@ export default function ContactForm() {
                   <Award size={18} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white tracking-tight">30-Minute Tactical Deep Dive</h4>
-                  <p className="text-xs text-neutral-500 leading-relaxed mt-0.5">We dive straight into live spreadsheets and real campaign logs. No generic PDFs.</p>
+                  <h4 className="text-sm font-bold text-white tracking-tight">
+                    30-Minute Tactical Deep Dive
+                  </h4>
+                  <p className="text-xs text-neutral-500 leading-relaxed mt-0.5">
+                    We dive straight into live spreadsheets and real campaign
+                    logs. No generic PDFs.
+                  </p>
                 </div>
               </div>
 
@@ -152,8 +202,13 @@ export default function ContactForm() {
                   <Shield size={18} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white tracking-tight">0% Obligation or Pressure</h4>
-                  <p className="text-xs text-neutral-500 leading-relaxed mt-0.5">If we aren’t a perfect fit to drive explosive growth for your brand, we will tell you.</p>
+                  <h4 className="text-sm font-bold text-white tracking-tight">
+                    0% Obligation or Pressure
+                  </h4>
+                  <p className="text-xs text-neutral-500 leading-relaxed mt-0.5">
+                    If we aren’t a perfect fit to drive explosive growth for
+                    your brand, we will tell you.
+                  </p>
                 </div>
               </div>
 
@@ -162,8 +217,13 @@ export default function ContactForm() {
                   <Sparkles size={18} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white tracking-tight">Custom Implementation Roadmap</h4>
-                  <p className="text-xs text-neutral-500 leading-relaxed mt-0.5">You keep the audit reports, performance models, and keyword strategies regardless.</p>
+                  <h4 className="text-sm font-bold text-white tracking-tight">
+                    Custom Implementation Roadmap
+                  </h4>
+                  <p className="text-xs text-neutral-500 leading-relaxed mt-0.5">
+                    You keep the audit reports, performance models, and keyword
+                    strategies regardless.
+                  </p>
                 </div>
               </div>
             </div>
@@ -215,7 +275,7 @@ export default function ContactForm() {
               >
                 {/* Glowing check banner */}
                 <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-blue-500 to-indigo-500" />
-                
+
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-3 rounded-full bg-emerald-500/10 text-emerald-400 flex-shrink-0">
                     <CheckCircle size={28} />
@@ -231,13 +291,14 @@ export default function ContactForm() {
                 </div>
 
                 <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed mb-6">
-                  Hey <strong>{formData.name}</strong>, thank you for locking in your free audit.
+                  Hey <strong>{formData.name}</strong>, thank you for locking in
+                  your free audit.
                 </p>
 
                 {/* Highlighted Next Steps Card */}
                 <div className="bg-indigo-950/20 border border-indigo-500/30 rounded-2xl p-6 shadow-lg shadow-indigo-500/5 relative overflow-hidden mb-2">
                   <div className="absolute -right-8 -bottom-8 w-24 h-24 rounded-full bg-indigo-500/10 blur-xl pointer-events-none" />
-                  
+
                   <div className="flex items-start gap-3 relative z-10">
                     <div className="p-2 rounded-lg bg-indigo-500/20 text-indigo-400 flex-shrink-0 mt-0.5">
                       <Sparkles size={16} className="animate-pulse" />
@@ -247,7 +308,25 @@ export default function ContactForm() {
                         WHAT HAPPENS NEXT?
                       </span>
                       <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed font-medium">
-                        One of our lead growth engineers will contact you at <strong className="text-white underline decoration-indigo-500/50 decoration-2 underline-offset-2">{formData.phone}</strong>{formData.email ? <> or <strong className="text-white underline decoration-blue-500/50 decoration-2 underline-offset-2">{formData.email}</strong></> : ''} within <strong className="text-indigo-400">12 hours</strong> with your fully populated report and calendar invite. Let’s scale!
+                        One of our lead growth engineers will contact you at{" "}
+                        <strong className="text-white underline decoration-indigo-500/50 decoration-2 underline-offset-2">
+                          {formData.phone}
+                        </strong>
+                        {formData.email ? (
+                          <>
+                            {" "}
+                            or{" "}
+                            <strong className="text-white underline decoration-blue-500/50 decoration-2 underline-offset-2">
+                              {formData.email}
+                            </strong>
+                          </>
+                        ) : (
+                          ""
+                        )}{" "}
+                        within{" "}
+                        <strong className="text-indigo-400">12 hours</strong>{" "}
+                        with your fully populated report and calendar invite.
+                        Let’s scale!
                       </p>
                     </div>
                   </div>
@@ -263,7 +342,8 @@ export default function ContactForm() {
                   {/* Name field */}
                   <div>
                     <label className="text-[10px] font-bold text-neutral-400 font-mono uppercase block mb-1.5">
-                      Your Full Name <span className="text-red-500 font-sans">*</span>
+                      Your Full Name{" "}
+                      <span className="text-red-500 font-sans">*</span>
                     </label>
                     <input
                       type="text"
@@ -279,7 +359,8 @@ export default function ContactForm() {
                   {/* Phone field */}
                   <div>
                     <label className="text-[10px] font-bold text-neutral-400 font-mono uppercase block mb-1.5">
-                      Phone Number <span className="text-red-500 font-sans">*</span>
+                      Phone Number{" "}
+                      <span className="text-red-500 font-sans">*</span>
                     </label>
                     <input
                       type="tel"
@@ -289,10 +370,12 @@ export default function ContactForm() {
                       value={formData.phone}
                       onChange={(e) => {
                         handleChange(e);
-                        if (phoneError) setPhoneError('');
+                        if (phoneError) setPhoneError("");
                       }}
                       className={`w-full bg-neutral-950 border rounded-xl px-4 py-3.5 text-xs sm:text-sm text-neutral-300 font-medium focus:outline-none focus:bg-neutral-950 transition-all placeholder:text-neutral-600 ${
-                        phoneError ? 'border-red-500 focus:border-red-500' : 'border-neutral-800/80 focus:border-indigo-500'
+                        phoneError
+                          ? "border-red-500 focus:border-red-500"
+                          : "border-neutral-800/80 focus:border-indigo-500"
                       }`}
                     />
                     {phoneError && (
@@ -364,11 +447,22 @@ export default function ContactForm() {
                       onChange={handleChange}
                       className="w-full bg-neutral-950 border border-neutral-800/80 rounded-xl px-4 py-3.5 text-xs sm:text-sm text-neutral-300 font-medium focus:outline-none focus:border-indigo-500 focus:bg-neutral-950 transition-all cursor-pointer"
                     >
-                      <option value="sales">Maximize Direct Product Sales (Shopify/E-com)</option>
-                      <option value="leads">Generate Pre-Qualified Active Leads (CRM Booking)</option>
-                      <option value="clicks">Boost Content Clicks & Organic Keywords (Traffic/SEO)</option>
-                      <option value="awareness">Build Massive Brand Awareness (Meme/PR/Viral)</option>
-                      <option value="website">Website Creation (High-Converting Landing Pages & Custom Dev)</option>
+                      <option value="sales">
+                        Maximize Direct Product Sales (Shopify/E-com)
+                      </option>
+                      <option value="leads">
+                        Generate Pre-Qualified Active Leads (CRM Booking)
+                      </option>
+                      <option value="clicks">
+                        Boost Content Clicks & Organic Keywords (Traffic/SEO)
+                      </option>
+                      <option value="awareness">
+                        Build Massive Brand Awareness (Meme/PR/Viral)
+                      </option>
+                      <option value="website">
+                        Website Creation (High-Converting Landing Pages & Custom
+                        Dev)
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -396,9 +490,24 @@ export default function ContactForm() {
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
                       </svg>
                       Preparing your growth audit...
                     </span>
