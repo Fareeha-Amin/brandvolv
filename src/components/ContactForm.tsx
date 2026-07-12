@@ -116,8 +116,6 @@ export default function ContactForm() {
     }
   };
 
-  const rec = getGoalRecommendation(formData.goal);
-
   return (
     <section id="contact" className="relative py-24 bg-[#030305] border-t border-neutral-900 overflow-hidden">
       {/* Background spotlights */}
@@ -173,11 +171,11 @@ export default function ContactForm() {
             {/* Contact / Social links */}
             <div className="flex flex-col sm:flex-row items-center gap-6 justify-center sm:justify-start text-xs text-neutral-400 font-mono flex-wrap">
               <a
-                href="mailto:hello@brandvolv.com"
+                href="mailto:buzzzengine@gmail.com"
                 className="flex items-center gap-2 hover:text-white transition-colors"
               >
                 <Mail size={14} className="text-blue-500" />
-                <span>hello@brandvolv.com</span>
+                <span>buzzzengine@gmail.com</span>
               </a>
               <a
                 href="https://wa.me/919972414587"
@@ -232,35 +230,28 @@ export default function ContactForm() {
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed mb-8">
-                  Hey <strong>{formData.name}</strong>, thank you for locking in your free audit. We are currently crawling your digital presence. Based on your submitted parameters, we have generated your initial tactical roadmap preview below:
+                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed mb-6">
+                  Hey <strong>{formData.name}</strong>, thank you for locking in your free audit.
                 </p>
 
-                {/* Custom plan summary box */}
-                <div className="bg-neutral-950/60 p-6 rounded-2xl border border-neutral-800/80 mb-8">
-                  <span className="text-[9px] font-bold text-indigo-400 font-mono tracking-widest uppercase block mb-1">
-                    PRELIMINARY STRATEGY BLUEPRINT
-                  </span>
-                  <h4 className="text-sm sm:text-base font-black text-white border-b border-neutral-900 pb-3 mb-4">
-                    ✦ {rec.title}
-                  </h4>
-                  <div className="flex flex-col gap-3">
-                    {rec.bullets.map((b, idx) => (
-                      <div key={idx} className="flex items-start gap-2.5">
-                        <div className="p-0.5 rounded bg-indigo-500/10 text-indigo-400 mt-1 flex-shrink-0">
-                          <CheckCircle size={10} />
-                        </div>
-                        <span className="text-xs sm:text-sm text-neutral-400 leading-normal">
-                          {b}
-                        </span>
-                      </div>
-                    ))}
+                {/* Highlighted Next Steps Card */}
+                <div className="bg-indigo-950/20 border border-indigo-500/30 rounded-2xl p-6 shadow-lg shadow-indigo-500/5 relative overflow-hidden mb-2">
+                  <div className="absolute -right-8 -bottom-8 w-24 h-24 rounded-full bg-indigo-500/10 blur-xl pointer-events-none" />
+                  
+                  <div className="flex items-start gap-3 relative z-10">
+                    <div className="p-2 rounded-lg bg-indigo-500/20 text-indigo-400 flex-shrink-0 mt-0.5">
+                      <Sparkles size={16} className="animate-pulse" />
+                    </div>
+                    <div>
+                      <span className="text-[9px] font-bold text-indigo-400 font-mono tracking-widest uppercase block mb-1">
+                        WHAT HAPPENS NEXT?
+                      </span>
+                      <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed font-medium">
+                        One of our lead growth engineers will contact you at <strong className="text-white underline decoration-indigo-500/50 decoration-2 underline-offset-2">{formData.phone}</strong>{formData.email ? <> or <strong className="text-white underline decoration-blue-500/50 decoration-2 underline-offset-2">{formData.email}</strong></> : ''} within <strong className="text-indigo-400">12 hours</strong> with your fully populated report and calendar invite. Let’s scale!
+                      </p>
+                    </div>
                   </div>
                 </div>
-
-                <p className="text-xs text-neutral-500 italic leading-normal">
-                  ✦ Next steps: One of our lead growth engineers will contact you at <strong>{formData.phone}</strong>{formData.email ? <> or <strong>{formData.email}</strong></> : ''} within 12 hours with your fully populated report and calendar invite. Let’s scale!
-                </p>
               </motion.div>
             ) : (
               /* Main Form Form */
@@ -409,7 +400,7 @@ export default function ContactForm() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      Crawling digital footprint...
+                      Preparing your growth audit...
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">

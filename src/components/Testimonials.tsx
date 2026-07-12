@@ -117,8 +117,8 @@ export default function Testimonials() {
             </div>
           </div>
 
-          {/* Right Side: Quick Grid Highlights / Multi-Brand Deck */}
-          <div className="lg:col-span-5 grid grid-cols-1 gap-6">
+          {/* Right Side: Quick Grid Highlights / Multi-Brand Deck - Hidden on mobile, shown on tablet/desktop */}
+          <div className="lg:col-span-5 hidden md:grid grid-cols-1 gap-6">
             {TESTIMONIALS.filter((_, idx) => idx !== activeIndex).slice(0, 3).map((item, idx) => (
               <div
                 key={item.id}

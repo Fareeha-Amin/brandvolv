@@ -88,10 +88,10 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-6 gap-x-4 w-full border-t border-b border-neutral-900/60 py-6 mt-12 px-2"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-8 gap-x-6 w-full border-t border-b border-neutral-900/60 py-8 mt-12 px-2"
           >
             {/* Item 1 */}
-            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+            <div className="flex items-center gap-3 justify-start lg:justify-center">
               <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
                 <BarChart2 size={18} className="text-neutral-300" />
               </div>
@@ -101,10 +101,8 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="hidden lg:block w-[1px] h-8 bg-neutral-900/80" />
-
             {/* Item 2 */}
-            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+            <div className="flex items-center gap-3 justify-start lg:justify-center">
               <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
                 <Target size={18} className="text-neutral-300" />
               </div>
@@ -114,10 +112,8 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="hidden lg:block w-[1px] h-8 bg-neutral-900/80" />
-
             {/* Item 3 */}
-            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+            <div className="flex items-center gap-3 justify-start lg:justify-center">
               <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
                 <Rocket size={18} className="text-neutral-300" />
               </div>
@@ -127,10 +123,8 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="hidden lg:block w-[1px] h-8 bg-neutral-900/80" />
-
             {/* Item 4 */}
-            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+            <div className="flex items-center gap-3 justify-start lg:justify-center">
               <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
                 <Users size={18} className="text-neutral-300" />
               </div>
@@ -140,10 +134,8 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="hidden lg:block w-[1px] h-8 bg-neutral-900/80" />
-
             {/* Item 5 */}
-            <div className="flex items-center gap-3 min-w-[150px] lg:min-w-0 flex-1 lg:flex-none justify-start">
+            <div className="flex items-center gap-3 justify-start lg:justify-center col-span-2 md:col-span-1">
               <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-300 shrink-0">
                 <Star size={18} className="text-neutral-100 fill-white" />
               </div>

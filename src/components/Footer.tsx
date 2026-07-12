@@ -26,7 +26,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-4 mt-6 justify-center sm:justify-start">
               <a
-                href="mailto:hello@brandvolv.com"
+                href="mailto:buzzzengine@gmail.com"
                 className="p-2.5 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 transition-colors"
                 aria-label="Email support"
               >

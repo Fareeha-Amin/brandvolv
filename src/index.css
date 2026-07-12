@@ -30,3 +30,73 @@
 .marquee-content:hover {
   animation-play-state: paused;
 }
+
+/* Touchscreens and mobile screen optimization for horizontal swipe scrolling */
+@media (hover: none), (max-width: 768px) {
+  .marquee-container {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Hide scrollbars on mobile for a cleaner look */
+  }
+  .marquee-container::-webkit-scrollbar {
+    display: none;
+  }
+  .marquee-content {
+    animation: none;
+    width: max-content;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  .marquee-content > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+}
+
+/* SLEEK PREMIUM SCROLLBAR STYLING */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030305;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  border: 2px solid #030305;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  border: 2px solid #030305;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(59, 130, 246, 0.8);
+  border-radius: 9999px;
+  border: 2px solid #030305;
+  background-clip: padding-box;
+}
+
+/* Firefox Scrollbar Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) #030305;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+

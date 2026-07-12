@@ -361,27 +361,28 @@ function BrandedTextFallback({ id, className, size = 'md' }: { id: string; class
       break;
     case 'unfreaky':
       icon = (
-        <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Smooth, thick lowercase "u" representing Unfreaky's custom typography, with a vibrant green sparkle */}
-          <path d="M 30,35 V 55 C 30,68 44,68 44,55 V 35 M 44,48 V 65" stroke="#14b8a6" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-          {/* A whimsical, glowing four-point star (sparkle) indicating high performance / freakishly good quality */}
-          <path d="M 72,42 C 72,48 76,52 82,52 C 76,52 72,56 72,62 C 72,56 68,52 62,52 C 68,52 72,48 72,42 Z" fill="#22c55e" />
-          {/* Subtle accent ring */}
-          <circle cx="50" cy="50" r="44" stroke="#1f2937" strokeWidth="2" strokeDasharray="4 4" className="opacity-40" />
+        <svg className="w-full h-full" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Unfreaky organic bold "u" mark with asymmetric blocky protrusion on the right */}
+          <path d="M 32,28 H 53 V 56 C 53,62 58,66 64,66 C 70,66 75,62 75,56 V 42 C 75,33 82,26 91,26 H 102 C 107,26 111,30 111,35 V 45 C 111,52 107,56 100,56 H 91 C 88,56 85,58 85,61 V 64 C 85,78 74,90 60,90 C 45,90 32,78 32,64 V 28 Z" fill="#ffffff" />
+          {/* Trademark symbol ® integrated beautifully */}
+          <g transform="translate(93, 70)">
+            <circle cx="6" cy="6" r="5.5" stroke="#ffffff" strokeWidth="1.2" fill="none" />
+            <text x="6" y="9" fontFamily="system-ui, -apple-system, sans-serif" fontSize="7.5" fontWeight="900" fill="#ffffff" textAnchor="middle">R</text>
+          </g>
         </svg>
       );
       break;
     case '7rclads':
       icon = (
         <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Architectural cladding panel grid background (subtle) */}
-          <path d="M 10,25 H 90 M 10,50 H 90 M 10,75 H 90 M 35,10 V 90 M 65,10 V 90" stroke="#1f2937" strokeWidth="1" className="opacity-30" />
-          
-          {/* Overlapping angular cladding sheets forming the numeral "7" in red */}
-          <path d="M 22,30 H 52 L 36,70" stroke="#ef4444" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-          
-          {/* Overlapping angular cladding sheets forming the letter "R" in metallic blue */}
-          <path d="M 52,42 V 70 M 52,42 C 52,30 70,30 70,42 C 70,54 52,54 52,54 L 68,70" stroke="#3b82f6" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Top-Left Gold Piece */}
+          <path d="M 26,26 H 47 L 41,44 H 26 Z" fill="#c19c6e" />
+          {/* First Dark Brown/Espresso Panel Strip */}
+          <path d="M 49,26 H 59 L 43,74 H 33 Z" fill="#533d2f" />
+          {/* Second Dark Brown/Espresso Panel Strip */}
+          <path d="M 53,50 H 63 L 55,74 H 45 Z" fill="#533d2f" />
+          {/* Middle-Right Gold Piece */}
+          <path d="M 65,50 H 74 V 62 H 61 Z" fill="#c19c6e" />
         </svg>
       );
       break;
@@ -447,7 +448,7 @@ export default function BrandLogo({ id, className = '', variant = 'color', size 
   if (normalizedId === 'hello-noemie') {
     return <NoemieLogo size={size} className={className} />;
   }
-  if (normalizedId === 'jd-ceramics') {
+  if (normalizedId === 'jd-ceramics' || normalizedId === 'unfreaky' || normalizedId === '7rclads') {
     return <BrandedTextFallback id={id} className={className} size={size} />;
   }
   const domain = DOMAIN_MAP[normalizedId];

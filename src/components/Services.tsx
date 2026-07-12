@@ -247,12 +247,12 @@ export default function Services() {
         {/* Dynamic Bento-like Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* Left Column: Pillars List (Col-span 5) */}
+          {/* Left Column: Pillars List (Col-span 5 on desktop, full-width on mobile) */}
           <div className="lg:col-span-5 flex flex-col gap-4 justify-between">
             {SERVICES_DATA.map((service) => {
               const isSelected = service.id === selectedId;
               return (
-                <button
+                <div
                   key={service.id}
                   onClick={() => setSelectedId(service.id)}
                   className={`relative p-5 rounded-2xl text-left border transition-all duration-300 group cursor-pointer w-full ${
@@ -285,7 +285,7 @@ export default function Services() {
                         </h3>
                         <ChevronRight
                           className={`w-4 h-4 shrink-0 transition-transform duration-300 ${
-                            isSelected ? 'text-blue-400 translate-x-1' : 'text-neutral-700 group-hover:text-neutral-500'
+                            isSelected ? 'text-blue-400 translate-x-1 rotate-90 lg:rotate-0' : 'text-neutral-700 group-hover:text-neutral-500'
                           }`}
                         />
                       </div>
@@ -294,13 +294,64 @@ export default function Services() {
                       </p>
                     </div>
                   </div>
-                </button>
+
+                  {/* Mobile-Only Expanded Accordion Details */}
+                  <AnimatePresence initial={false}>
+                    {isSelected && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="lg:hidden overflow-hidden mt-6 pt-6 border-t border-neutral-850"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {/* Performance outcome card */}
+                        <div className="bg-neutral-950/60 border border-neutral-850 rounded-2xl px-4 py-3 mb-6 flex flex-col items-start shadow-inner">
+                          <span className="text-[9px] font-bold text-blue-500 font-mono tracking-[0.18em] uppercase">
+                            {service.metricLabel}
+                          </span>
+                          <span className="text-base font-extrabold text-white mt-1 tracking-tight">
+                            {service.metricValue}
+                          </span>
+                          <span className="text-[10px] text-neutral-500 mt-0.5 font-medium">
+                            {service.metricSub}
+                          </span>
+                        </div>
+
+                        {/* Long description */}
+                        <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6">
+                          {service.longDescription}
+                        </p>
+
+                        {/* Approach list */}
+                        <div>
+                          <h4 className="text-[9px] font-bold text-blue-500 uppercase tracking-[0.2em] font-mono mb-3">
+                            // OUR APPROACH
+                          </h4>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {service.approach.map((method, idx) => (
+                              <div key={idx} className="flex items-center gap-2.5">
+                                <div className="w-4.5 h-4.5 rounded-full bg-blue-950/40 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                                  <Check size={10} className="stroke-[3]" />
+                                </div>
+                                <span className="text-xs text-neutral-300">
+                                  {method}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               );
             })}
           </div>
 
-          {/* Right Column: Display Details (Col-span 7) */}
-          <div className="lg:col-span-7 flex">
+          {/* Right Column: Display Details (Col-span 7) - Hidden on mobile, shown on desktop */}
+          <div className="lg:col-span-7 hidden lg:flex">
             <AnimatePresence mode="wait">
               <motion.div
                 key={selectedService.id}
