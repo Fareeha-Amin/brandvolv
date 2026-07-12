@@ -288,19 +288,56 @@ function BrandedTextFallback({ id, className, size = 'md' }: { id: string; class
     case 'jd-ceramics':
       icon = (
         <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Two overlapping glossy ceramic tiles (diamonds) representing premium tiles & ceramics */}
-          <g transform="translate(50, 50) rotate(45)">
-            {/* Tile 1: Deep Navy Blue glazed tile */}
-            <rect x="-32" y="-32" width="40" height="40" rx="6" fill="#0d355a" opacity="0.95" />
-            <rect x="-32" y="-32" width="40" height="40" rx="6" stroke="#1e40af" strokeWidth="2" fill="none" />
-            
-            {/* Tile 2: Terracotta / Gold glazed tile overlapping */}
-            <rect x="-8" y="-8" width="40" height="40" rx="6" fill="#d97706" opacity="0.9" />
-            <rect x="-8" y="-8" width="40" height="40" rx="6" stroke="#f59e0b" strokeWidth="2" fill="none" />
-          </g>
-          {/* Monogram JD in high contrast on top */}
-          <text x="32" y="55" fill="#ffffff" fontFamily="'Inter', sans-serif" fontSize="24" fontWeight="900" letterSpacing="-1">J</text>
-          <text x="50" y="55" fill="#ffffff" fontFamily="'Inter', sans-serif" fontSize="24" fontWeight="900" letterSpacing="-1">D</text>
+          <defs>
+            <linearGradient id="jd-stem-grad" x1="0" y1="0" x2="0.2" y2="1">
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="25%" stopColor="#cbd5e1" />
+              <stop offset="60%" stopColor="#1e3a8a" />
+              <stop offset="100%" stopColor="#080e1e" />
+            </linearGradient>
+            <linearGradient id="jd-bowl-grad" x1="0.1" y1="0.1" x2="0.9" y2="0.9">
+              <stop offset="0%" stopColor="#4f46e5" />
+              <stop offset="30%" stopColor="#2563eb" />
+              <stop offset="70%" stopColor="#1d4ed8" />
+              <stop offset="100%" stopColor="#050b18" />
+            </linearGradient>
+            <filter id="jd-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#000000" floodOpacity="0.6" />
+            </filter>
+          </defs>
+          
+          {/* Bottom Sweep & Left Bowl (rendered under the stem but curving around) */}
+          <path
+            d="M 58,47 L 45,47 C 38.5,47 34,51.5 34,57.5 L 34,75.5 C 34,85.5 41.5,92.5 51.5,92.5 L 67,92.5 C 71.5,92.5 74.5,89.5 74.5,84.5 C 74.5,80.5 71,78 66.5,78 L 54,78 C 47,78 44.5,74.5 44.5,67.5 L 44.5,61 C 44.5,56.5 48,53.5 53,53.5 L 58,53.5 Z"
+            fill="url(#jd-bowl-grad)"
+          />
+
+          {/* Right Vertical Stem (with drop shadow to overlap beautifully) */}
+          <path
+            d="M 58,22 C 58,16.5 61,12 64,12 C 67,12 70,16.5 70,22 L 70,78 C 70,82.5 67,85.5 64,85.5 C 61,85.5 58,82.5 58,78 Z"
+            fill="url(#jd-stem-grad)"
+            filter="url(#jd-shadow)"
+          />
+
+          {/* Subtle glossy 3D edge highlight on the stem */}
+          <path
+            d="M 58.5,22 C 58.5,17 61,13 64,13 C 67,13 69.5,17 69.5,22 L 69.5,78"
+            stroke="#ffffff"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            opacity="0.35"
+            fill="none"
+          />
+
+          {/* Inner blue glow on the bowl */}
+          <path
+            d="M 35.5,57.5 L 35.5,74.5 C 35.5,83.5 42,91 51,91"
+            stroke="#93c5fd"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            opacity="0.25"
+            fill="none"
+          />
         </svg>
       );
       break;

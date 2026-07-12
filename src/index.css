@@ -56,39 +56,31 @@
 
 /* SLEEK PREMIUM SCROLLBAR STYLING */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #030305;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
-  border: 2px solid #030305;
-  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 9999px;
-  border: 2px solid #030305;
-  background-clip: padding-box;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: rgba(59, 130, 246, 0.8);
-  border-radius: 9999px;
-  border: 2px solid #030305;
-  background-clip: padding-box;
+  background: rgba(59, 130, 246, 0.6);
 }
 
 /* Firefox Scrollbar Support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) #030305;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
 }
 
 /* Hide scrollbar utility */
