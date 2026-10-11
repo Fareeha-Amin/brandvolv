@@ -42,17 +42,14 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
 
     try {
       await addDoc(collection(db, 'leads'), {
-        name: formData.fullName,
-        phone: formData.phone,
+        businessName: formData.businessName,
+        fullName: formData.fullName,
         email: formData.email,
-        website: formData.businessName,
-        spend: formData.monthlyAdSpend,
-        goal: 'leads',
-        message: [
-          `Service type: ${formData.serviceType}`,
-          `Primary bottleneck: ${formData.primaryBottleneck}`,
-          `Preferred call window: ${formData.selectedDay}`,
-        ].join('\n'),
+        phone: formData.phone,
+        serviceType: formData.serviceType,
+        monthlyAdSpend: formData.monthlyAdSpend,
+        primaryBottleneck: formData.primaryBottleneck,
+        selectedDay: formData.selectedDay,
         createdAt: serverTimestamp(),
       });
 
