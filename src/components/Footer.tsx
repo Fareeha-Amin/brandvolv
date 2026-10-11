@@ -1,121 +1,148 @@
 import React from 'react';
-import Logo from './Logo';
-import { Mail, Instagram, ArrowUp, Compass } from 'lucide-react';
+import { ArrowUpRight, Instagram, MessageCircle } from 'lucide-react';
+import { BrandLogo } from './BrandLogo';
 
-export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+interface FooterProps {
+  onBookCall: () => void;
+  onOpenWhatsApp: () => void;
+  onOpenCaseStudiesPage?: () => void;
+}
 
-  const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+export const Footer: React.FC<FooterProps> = ({ onBookCall, onOpenWhatsApp, onOpenCaseStudiesPage }) => {
   return (
-    <footer className="relative bg-[#030305] border-t border-neutral-900 py-16 overflow-hidden">
-      {/* Background flare */}
-      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-blue-900/5 blur-[90px] pointer-events-none" />
+    <footer className="border-t border-white/5 bg-[#07090e] py-16 text-slate-400 text-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/5">
+          {/* Brand Info */}
+          <div className="md:col-span-5 space-y-4">
+            <BrandLogo size="md" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start border-b border-neutral-900 pb-12 mb-12">
-          {/* Col 1: Brand description (Col-span 5) */}
-          <div className="md:col-span-5 text-center sm:text-left">
-            <Logo size="md" className="justify-center sm:justify-start" />
-            <p className="text-xs sm:text-sm text-neutral-500 mt-4 max-w-sm leading-relaxed">
-              Brandvolv is an elite full-performance digital marketing and creative agency. We architect high-converting digital ecosystems, 3D visual storytelling, viral meme campaigns, and organic SEO growth.
+            <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
+              We engineer predictable, conversion-focused Meta Ads lead generation systems for USA-based service businesses. Replacing random boosted posts with systematic client acquisition.
             </p>
-            <div className="flex items-center gap-4 mt-6 justify-center sm:justify-start">
+
+            {/* Direct Social Links */}
+            <div className="flex items-center gap-4 pt-1">
               <a
-                href="mailto:buzzzengine@gmail.com"
-                className="p-2.5 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 transition-colors"
-                aria-label="Email support"
+                href="https://wa.me/919845617868"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-xs transition-colors"
               >
-                <Mail size={16} />
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>WhatsApp: +91 98456 17868</span>
+              </a>
+
+              <a
+                href="https://www.instagram.com/brandvolv/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/20 text-xs transition-colors"
+              >
+                <Instagram className="w-3.5 h-3.5" />
+                <span>@brandvolv</span>
+              </a>
+            </div>
+
+            <div className="text-[11px] text-slate-500">
+              Specialized for Real Estate, Home Services, Professional B2B, and High-Ticket Consulting.
+            </div>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="md:col-span-3 space-y-3">
+            <div className="font-semibold text-white uppercase tracking-wider text-[11px]">
+              System Navigation
+            </div>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <a href="#problem" className="hover:text-white transition-colors">
+                  The Problem
+                </a>
+              </li>
+              <li>
+                <a href="#system" className="hover:text-white transition-colors">
+                  The 7-Step System
+                </a>
+              </li>
+              <li>
+                <a href="#ugc-ai" className="hover:text-white transition-colors">
+                  UGC AI Ads
+                </a>
+              </li>
+              <li>
+                <button
+                  onClick={onOpenCaseStudiesPage}
+                  className="hover:text-white text-slate-400 transition-colors text-left"
+                >
+                  Case Studies & Reviews Hub
+                </button>
+              </li>
+              <li>
+                <a href="#process" className="hover:text-white transition-colors">
+                  3-Month Process
+                </a>
+              </li>
+              <li>
+                <a href="#pricing" className="hover:text-white transition-colors">
+                  Lead Generation Plans
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Direct Engagement */}
+          <div className="md:col-span-4 space-y-3">
+            <div className="font-semibold text-white uppercase tracking-wider text-[11px]">
+              Take Next Step
+            </div>
+            <p className="text-xs text-slate-400">
+              Schedule a 1-on-1 strategy teardown of your current advertising funnel.
+            </p>
+            <div className="space-y-2 pt-1">
+              <button
+                onClick={onBookCall}
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-600/20 hover:text-blue-300 transition-colors"
+              >
+                <span>Book Strategy Call</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </button>
+              <a
+                href="https://wa.me/919845617868"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-emerald-600/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-600/20 hover:text-emerald-300 transition-colors"
+              >
+                <span>Message on WhatsApp (+91 98456 17868)</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
               <a
                 href="https://www.instagram.com/brandvolv/"
                 target="_blank"
-                rel="noreferrer"
-                className="p-2.5 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 transition-colors"
-                aria-label="Instagram profile"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-pink-600/10 border border-pink-500/20 text-pink-400 hover:bg-pink-600/20 hover:text-pink-300 transition-colors"
               >
-                <Instagram size={16} />
-              </a>
-              <a
-                href="https://wa.me/919972414587"
-                target="_blank"
-                rel="noreferrer"
-                className="p-2.5 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-emerald-400 hover:border-emerald-500/50 transition-colors"
-                aria-label="WhatsApp profile"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-[16px] h-[16px] fill-current"
-                  aria-hidden="true"
-                >
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.455 5.703 1.458h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413" />
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          {/* Col 2: Navigation (Col-span 3) */}
-          <div className="md:col-span-3 text-center sm:text-left">
-            <span className="text-[10px] font-bold text-neutral-500 font-mono tracking-widest uppercase block mb-4">
-              GROWTH NAVIGATION
-            </span>
-            <div className="flex flex-col gap-3 text-xs sm:text-sm text-neutral-400 font-medium">
-              <button onClick={() => scrollToSection('services')} className="hover:text-white transition-colors cursor-pointer text-left self-center sm:self-start">
-                Core Services & Pillars
-              </button>
-              <button onClick={() => scrollToSection('case-studies')} className="hover:text-white transition-colors cursor-pointer text-left self-center sm:self-start">
-                Case Studies & Performance
-              </button>
-              <button onClick={() => scrollToSection('web-portfolio')} className="hover:text-white transition-colors cursor-pointer text-left self-center sm:self-start">
-                Web Development Showcase
-              </button>
-            </div>
-          </div>
-
-          {/* Col 3: Contact Details (Col-span 4) */}
-          <div className="md:col-span-4 text-center sm:text-left">
-            <span className="text-[10px] font-bold text-neutral-500 font-mono tracking-widest uppercase block mb-4">
-              PARTNER ECOSYSTEMS
-            </span>
-            <p className="text-xs text-neutral-500 leading-relaxed mb-4">
-              We operate internationally, executing high-converting ad portfolios across Indian, GCC (Dubai), and global DTC arenas.
-            </p>
-            <div className="bg-neutral-950/60 p-4 rounded-xl border border-neutral-900 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Compass size={14} className="text-blue-500" />
-                <span className="text-[11px] font-bold text-neutral-400 font-mono uppercase tracking-wider">
-                  OFFICIAL DOMAIN:
-                </span>
-              </div>
-              <a
-                href="https://brandvolv.com/"
-                className="text-xs font-bold text-blue-400 hover:underline font-mono"
-              >
-                brandvolv.com
+                <span>Follow on Instagram (@brandvolv)</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
         </div>
 
-        {/* Copyrights and Back-to-top */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500 font-mono">
-          <span>
-            © {new Date().getFullYear()} Brandvolv. All Rights Reserved. Powered by performance.
-          </span>
-          <button
-            onClick={scrollToTop}
-            className="flex items-center gap-1.5 hover:text-white transition-colors group cursor-pointer bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-lg"
-          >
-            <span>Back to Top</span>
-            <ArrowUp size={12} className="group-hover:-translate-y-0.5 transition-transform" />
-          </button>
+        {/* Quiet Sub-Footer */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+          <div>
+            © {new Date().getFullYear()} BrandVolv. All rights reserved. Meta is a registered trademark of Meta Platforms, Inc.
+          </div>
+          <div className="flex items-center gap-6">
+            <span>Privacy Policy</span>
+            <span aria-hidden="true">·</span>
+            <span>Terms of Service</span>
+            <span aria-hidden="true">·</span>
+            <span>Client Qualification Agreement</span>
+          </div>
         </div>
       </div>
     </footer>
   );
-}
+};

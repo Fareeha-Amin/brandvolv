@@ -1,48 +1,129 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Services from './components/Services';
-import CaseStudies from './components/CaseStudies';
-import WebShowcase from './components/WebShowcase';
-import Testimonials from './components/Testimonials';
-import ContactForm from './components/ContactForm';
-import Footer from './components/Footer';
+import React, { useState } from 'react';
+import { Navbar } from './components/Navbar';
+import { HeroSection } from './components/HeroSection';
+import { ProblemSection } from './components/ProblemSection';
+import { SystemSection } from './components/SystemSection';
+import { UgcAiVideoSection } from './components/UgcAiVideoSection';
+import { ProofSection } from './components/ProofSection';
+import { ProcessSection } from './components/ProcessSection';
+import { PricingSection } from './components/PricingSection';
+import { FinalCtaSection } from './components/FinalCtaSection';
+import { CaseStudiesHub } from './components/CaseStudiesHub';
+import { Footer } from './components/Footer';
+import { StrategyCallModal } from './components/StrategyCallModal';
+import { CaseStudyDetailModal } from './components/CaseStudyDetailModal';
+import { RoiCalculatorModal } from './components/RoiCalculatorModal';
+import { WhatsAppModal } from './components/WhatsAppModal';
+import { CaseStudy } from './types/index';
 
 export default function App() {
+  const [activePage, setActivePage] = useState<'home' | 'case-studies'>('home');
+  const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
+  const [isRoiOpen, setIsRoiOpen] = useState<boolean>(false);
+  const [isWhatsAppOpen, setIsWhatsAppOpen] = useState<boolean>(false);
+  const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
+
+  const handleOpenBooking = () => setIsBookingOpen(true);
+  const handleOpenRoi = () => setIsRoiOpen(true);
+  const handleOpenWhatsApp = () => setIsWhatsAppOpen(true);
+
+  const handleGoToCaseStudies = () => {
+    setActivePage('case-studies');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleGoToHome = () => {
+    setActivePage('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="bg-[#030305] text-white min-h-screen font-sans selection:bg-blue-500/30 selection:text-blue-200 antialiased overflow-x-hidden">
-      {/* Premium Sticky Navbar */}
-      <Header />
+    <div className="min-h-screen bg-[#090b10] text-slate-100 selection:bg-blue-600 selection:text-white flex flex-col font-sans">
+      {/* 1-Row, 3-Zone Navigation */}
+      <Navbar
+        currentPage={activePage}
+        onBookCall={handleOpenBooking}
+        onGoToHome={handleGoToHome}
+        onGoToCaseStudies={handleGoToCaseStudies}
+      />
 
-      {/* Main Sections */}
-      <main>
-        {/* Cinematic Hero Header with infinite brand marquee */}
-        <Hero />
+      {/* Main View Router */}
+      <main className="flex-1">
+        {activePage === 'home' ? (
+          <div className="animate-in fade-in duration-200">
+            {/* Section 1: Hero */}
+            <HeroSection onBookCall={handleOpenBooking} />
 
-        {/* Core Pillars: Interactive Services list */}
-        <Services />
+            {/* Section 2: The Problem */}
+            <ProblemSection onBookCall={handleOpenBooking} />
 
-        {/* Case Studies Dashboard: Toggle real campaign metrics */}
-        <CaseStudies />
+            {/* Section 3: The System (Cleaned: no awkward vertical line or arrows) */}
+            <SystemSection onBookCall={handleOpenBooking} />
 
-        {/* Shopify & WordPress Portfolio grid */}
-        <WebShowcase />
+            {/* UGC AI Creative Production Section */}
+            <UgcAiVideoSection onBookCall={handleOpenBooking} />
 
-        {/* Real Testimonials with interactive slider and visual rating indicators */}
-        <Testimonials />
+            {/* Section 4: Proof / Case Studies (Original non-AI screenshot & compact slide trigger) */}
+            <ProofSection
+              onBookCall={handleOpenBooking}
+              onOpenCaseStudiesPage={handleGoToCaseStudies}
+            />
 
-        {/* Lead Capture and Strategic proposal builder */}
-        <ContactForm />
+            {/* Section 5: The Process */}
+            <ProcessSection onBookCall={handleOpenBooking} />
+
+            {/* Section 6: Pricing Plans */}
+            <PricingSection
+              onBookCall={handleOpenBooking}
+              onOpenCalculator={handleOpenRoi}
+            />
+
+            {/* Section 7: Final CTA */}
+            <FinalCtaSection
+              onBookCall={handleOpenBooking}
+              onOpenWhatsApp={handleOpenWhatsApp}
+            />
+          </div>
+        ) : (
+          /* Dedicated Case Studies & Reviews Hub */
+          <CaseStudiesHub
+            onBackToHome={handleGoToHome}
+            onBookCall={handleOpenBooking}
+            onSelectCaseStudy={(study) => setSelectedCaseStudy(study)}
+          />
+        )}
       </main>
 
-      {/* Footer detailing domains and social connections */}
-      <Footer />
+      {/* Footer */}
+      <Footer
+        onBookCall={handleOpenBooking}
+        onOpenWhatsApp={handleOpenWhatsApp}
+        onOpenCaseStudiesPage={handleGoToCaseStudies}
+      />
+
+      {/* Interactive Modals */}
+      <StrategyCallModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        onOpenWhatsApp={handleOpenWhatsApp}
+      />
+
+      <CaseStudyDetailModal
+        study={selectedCaseStudy}
+        onClose={() => setSelectedCaseStudy(null)}
+        onBookCall={handleOpenBooking}
+      />
+
+      <RoiCalculatorModal
+        isOpen={isRoiOpen}
+        onClose={() => setIsRoiOpen(false)}
+        onBookCall={handleOpenBooking}
+      />
+
+      <WhatsAppModal
+        isOpen={isWhatsAppOpen}
+        onClose={() => setIsWhatsAppOpen(false)}
+      />
     </div>
   );
 }
-
