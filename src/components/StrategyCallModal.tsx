@@ -32,6 +32,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submissionError, setSubmissionError] = useState<string>('');
+  const [savedLeadId, setSavedLeadId] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -39,19 +40,58 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
     e.preventDefault();
     setIsSubmitting(true);
     setSubmissionError('');
+    let leadWasSaved = Boolean(savedLeadId);
 
     try {
-      await addDoc(collection(db, 'leads'), {
-        businessName: formData.businessName,
-        fullName: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        serviceType: formData.serviceType,
-        monthlyAdSpend: formData.monthlyAdSpend,
-        primaryBottleneck: formData.primaryBottleneck,
-        selectedDay: formData.selectedDay,
-        createdAt: serverTimestamp(),
+      let leadId = savedLeadId;
+      if (!leadId) {
+        const leadRef = await addDoc(collection(db, 'leads'), {
+          businessName: formData.businessName,
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          serviceType: formData.serviceType,
+          monthlyAdSpend: formData.monthlyAdSpend,
+          primaryBottleneck: formData.primaryBottleneck,
+          selectedDay: formData.selectedDay,
+          createdAt: serverTimestamp(),
+        });
+        leadId = leadRef.id;
+        leadWasSaved = true;
+        setSavedLeadId(leadId);
+      }
+
+      const { VITE_WEB3FORMS_ACCESS_KEY } = import.meta.env;
+      if (!VITE_WEB3FORMS_ACCESS_KEY) {
+        throw new Error('Web3Forms access key is not configured.');
+      }
+
+      const emailResponse = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: VITE_WEB3FORMS_ACCESS_KEY,
+          subject: `New Strategy Call Booking: ${formData.fullName}`,
+          from_name: 'BrandVolv Strategy Call Booking',
+          replyto: formData.email,
+          botcheck: '',
+          business_name: formData.businessName,
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          service_type: formData.serviceType,
+          monthly_ad_spend: formData.monthlyAdSpend,
+          primary_bottleneck: formData.primaryBottleneck,
+          selected_day: formData.selectedDay,
+          booking_id: leadId,
+          submitted_at: new Date().toISOString(),
+        }),
       });
+
+      const emailResult: { success?: boolean; message?: string } = await emailResponse.json();
+      if (!emailResponse.ok || !emailResult.success) {
+        throw new Error(emailResult.message || `Web3Forms request failed with status ${emailResponse.status}.`);
+      }
 
       setIsSubmitted(true);
       const fbq = (window as WindowWithFacebookPixel).fbq;
@@ -63,16 +103,26 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
         });
       }
     } catch (error) {
-      console.error('Error saving strategy call lead:', error);
-      setSubmissionError('We could not save your request. Please try again or contact us on WhatsApp.');
+      console.error('Error processing strategy call booking:', error);
+      setSubmissionError(
+        leadWasSaved
+          ? 'Your booking is saved, but we could not send the notification email. Please retry or contact us on WhatsApp.'
+          : 'We could not save your request. Please try again or contact us on WhatsApp.',
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleReset = () => {
+    if (isSubmitted) {
+      setSavedLeadId(null);
+      setSubmissionError('');
+      setStep(1);
+    } else if (!savedLeadId) {
+      setStep(1);
+    }
     setIsSubmitted(false);
-    setStep(1);
     onClose();
   };
 
@@ -129,6 +179,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                       <input
                         type="text"
                         required
+                        disabled={Boolean(savedLeadId)}
                         value={formData.businessName}
                         onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                         placeholder="e.g. Apex Premier Realty / Skyline Design"
@@ -142,6 +193,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                       Industry / Service Type
                     </label>
                     <select
+                      disabled={Boolean(savedLeadId)}
                       value={formData.serviceType}
                       onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl bg-[#141a2e] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors"
@@ -158,7 +210,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                   <div className="pt-2">
                     <button
                       type="button"
-                      disabled={!formData.businessName.trim()}
+                      disabled={!formData.businessName.trim() || Boolean(savedLeadId)}
                       onClick={() => setStep(2)}
                       className="w-full flex items-center justify-center gap-2 py-3 px-5 text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-md shadow-blue-600/30"
                     >
@@ -180,6 +232,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                       Monthly Meta Ad Spend (Current or Planned)
                     </label>
                     <select
+                      disabled={Boolean(savedLeadId)}
                       value={formData.monthlyAdSpend}
                       onChange={(e) => setFormData({ ...formData, monthlyAdSpend: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl bg-[#141a2e] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors"
@@ -196,6 +249,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                       What is your biggest current bottleneck?
                     </label>
                     <select
+                      disabled={Boolean(savedLeadId)}
                       value={formData.primaryBottleneck}
                       onChange={(e) => setFormData({ ...formData, primaryBottleneck: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl bg-[#141a2e] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors"
@@ -211,6 +265,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                   <div className="flex gap-3 pt-2">
                     <button
                       type="button"
+                      disabled={Boolean(savedLeadId)}
                       onClick={() => setStep(1)}
                       className="py-3 px-4 text-xs font-semibold text-slate-400 hover:text-white rounded-xl bg-white/5 border border-white/10 transition-colors"
                     >
@@ -218,6 +273,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                     </button>
                     <button
                       type="button"
+                      disabled={Boolean(savedLeadId)}
                       onClick={() => setStep(3)}
                       className="flex-1 flex items-center justify-center gap-2 py-3 px-5 text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all shadow-md shadow-blue-600/30"
                     >
@@ -244,6 +300,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                         <input
                           type="text"
                           required
+                          disabled={Boolean(savedLeadId)}
                           value={formData.fullName}
                           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                           placeholder="Full Name"
@@ -261,6 +318,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                         <input
                           type="email"
                           required
+                          disabled={Boolean(savedLeadId)}
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           placeholder="name@business.com"
@@ -279,6 +337,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                       <input
                         type="tel"
                         required
+                        disabled={Boolean(savedLeadId)}
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="+1 (555) 000-0000"
@@ -301,6 +360,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                         <button
                           key={slot}
                           type="button"
+                          disabled={Boolean(savedLeadId)}
                           onClick={() => setFormData({ ...formData, selectedDay: slot })}
                           className={`p-2.5 rounded-lg border text-left flex items-center gap-2 transition-all ${
                             formData.selectedDay === slot
@@ -318,6 +378,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                   <div className="flex gap-3 pt-2">
                     <button
                       type="button"
+                      disabled={Boolean(savedLeadId)}
                       onClick={() => setStep(2)}
                       className="py-3 px-4 text-xs font-semibold text-slate-400 hover:text-white rounded-xl bg-white/5 border border-white/10 transition-colors"
                     >
@@ -328,7 +389,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                       disabled={isSubmitting}
                       className="flex-1 flex items-center justify-center gap-2 py-3 px-5 text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all shadow-lg shadow-blue-600/40"
                     >
-                      <span>{isSubmitting ? 'Saving Your Request...' : 'Confirm & Lock Strategy Session'}</span>
+                      <span>{isSubmitting ? 'Saving Your Request...' : savedLeadId ? 'Retry Email Notification' : 'Confirm & Lock Strategy Session'}</span>
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
