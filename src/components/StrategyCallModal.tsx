@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Calendar, Clock, CheckCircle2, ArrowRight, ShieldCheck, User, Mail, Phone, Building2, Instagram, ExternalLink, MessageCircle } from 'lucide-react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -13,12 +13,97 @@ interface StrategyCallModalProps {
   onOpenWhatsApp: () => void;
 }
 
+const toDateKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const formatSubmittedAt = (date: Date) =>
+  `${new Intl.DateTimeFormat('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  }).format(date)} IST`;
+
+const formatClockTime = (hours: number, minutes: number) => {
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const normalizedHour = hours % 12 === 0 ? 12 : hours % 12;
+  const paddedMinutes = minutes.toString().padStart(2, '0');
+  return `${normalizedHour}:${paddedMinutes} ${period}`;
+};
+
+const getOperatingHours = (selectedDate: Date) => {
+  const isWeekend = selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
+  return { startHour: isWeekend ? 7 : 11, endHour: isWeekend ? 20 : 21 };
+};
+
+const getMonthGrid = (monthDate: Date) => {
+  const firstOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+  const startDay = new Date(firstOfMonth);
+  startDay.setDate(firstOfMonth.getDate() - firstOfMonth.getDay());
+
+  const days: Array<Date | null> = [];
+  for (let index = 0; index < 42; index += 1) {
+    const day = new Date(startDay);
+    day.setDate(startDay.getDate() + index);
+    days.push(day);
+  }
+
+  return days;
+};
+
+const parseClockTime = (time: string) => {
+  const match = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) return { hours: 14, minutes: 0 };
+  let hour = Number(match[1]);
+  const minutes = Number(match[2]);
+  const period = match[3].toUpperCase();
+
+  if (period === 'PM' && hour !== 12) hour += 12;
+  if (period === 'AM' && hour === 12) hour = 0;
+
+  return { hours: hour, minutes };
+};
+
+const isWithinOperatingHours = (time: string, selectedDate: Date) => {
+  const { hours, minutes } = parseClockTime(time);
+  const { startHour, endHour } = getOperatingHours(selectedDate);
+  const timeInMinutes = hours * 60 + minutes;
+
+  return timeInMinutes >= startHour * 60 && timeInMinutes <= endHour * 60;
+};
+
 export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
   isOpen,
   onClose,
   onOpenWhatsApp,
 }) => {
   const [step, setStep] = useState<number>(1);
+  const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
+    const initial = new Date();
+    initial.setDate(1);
+    return initial;
+  });
+  const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
+  const [isTimeModalOpen, setIsTimeModalOpen] = useState<boolean>(false);
+  const [clockStage, setClockStage] = useState<'hours' | 'minutes'>('hours');
+  const [draftHour, setDraftHour] = useState<number>(14);
+  const [draftMinute, setDraftMinute] = useState<number>(0);
+  const [draftPeriod, setDraftPeriod] = useState<'AM' | 'PM'>('PM');
+  const [selectedDate, setSelectedDate] = useState<string>(() => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    return toDateKey(tomorrow);
+  });
+  const [selectedTime, setSelectedTime] = useState<string>('2:00 PM');
   const [formData, setFormData] = useState({
     businessName: '',
     fullName: '',
@@ -27,12 +112,53 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
     serviceType: 'Home Services / Renovation',
     monthlyAdSpend: '$1,000 - $3,000 / mo',
     primaryBottleneck: 'Leads are low-quality or unresponsive',
-    selectedDay: 'Tomorrow, 2:00 PM EST',
+    selectedDay: 'Tomorrow, 2:00 PM USA Time',
   });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submissionError, setSubmissionError] = useState<string>('');
   const [savedLeadId, setSavedLeadId] = useState<string | null>(null);
+
+  const selectedDateObject = new Date(`${selectedDate}T00:00:00`);
+  const selectedDateLabel = selectedDateObject.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+  });
+  const { startHour, endHour } = getOperatingHours(selectedDateObject);
+  const clockHours = Array.from({ length: endHour - startHour + 1 }, (_, index) => startHour + index);
+  const clockMinutes = Array.from({ length: 12 }, (_, index) => index * 5);
+
+  useEffect(() => {
+    if (!isWithinOperatingHours(selectedTime, selectedDateObject)) {
+      setSelectedTime(formatClockTime(startHour, 0));
+    }
+  }, [selectedDate, selectedTime, selectedDateObject, startHour]);
+
+  useEffect(() => {
+    setFormData((previous) => ({
+      ...previous,
+      selectedDay: `${selectedDateLabel}, ${selectedTime} USA Time`,
+    }));
+  }, [selectedDateLabel, selectedTime]);
+
+  const calendarDays = getMonthGrid(calendarMonth);
+  const openTimePicker = () => {
+    const parsedTime = parseClockTime(selectedTime);
+    setDraftHour(parsedTime.hours);
+    setDraftMinute(parsedTime.minutes);
+    setDraftPeriod(parsedTime.hours >= 12 ? 'PM' : 'AM');
+    setClockStage('hours');
+    setIsTimeModalOpen(true);
+  };
+  const chooseClockHour = (hour: number) => {
+    setDraftHour(hour);
+    setDraftMinute(0);
+    setClockStage('minutes');
+  };
+  const chooseClockMinute = (minute: number) => {
+    setDraftMinute(minute);
+  };
 
   if (!isOpen) return null;
 
@@ -84,7 +210,7 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
           primary_bottleneck: formData.primaryBottleneck,
           selected_day: formData.selectedDay,
           booking_id: leadId,
-          submitted_at: new Date().toISOString(),
+          submitted_at: formatSubmittedAt(new Date()),
         }),
       });
 
@@ -350,28 +476,44 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                     <label className="block text-xs font-medium text-slate-300 mb-1">
                       Preferred Call Window
                     </label>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      {[
-                        'Tomorrow, 11:00 AM EST',
-                        'Tomorrow, 2:30 PM EST',
-                        'In 2 Days, 10:00 AM EST',
-                        'In 2 Days, 4:00 PM EST',
-                      ].map((slot) => (
+                    <div className="text-[10px] text-slate-400 mb-3">
+                      USA Time · Monday–Friday: 11:00 AM – 9:00 PM · Saturday–Sunday: 7:00 AM – 8:00 PM
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2 text-[10px] uppercase tracking-wider text-slate-400">
+                          <Calendar className="w-3.5 h-3.5 text-blue-400" />
+                          Select a day
+                        </div>
+
                         <button
-                          key={slot}
                           type="button"
                           disabled={Boolean(savedLeadId)}
-                          onClick={() => setFormData({ ...formData, selectedDay: slot })}
-                          className={`p-2.5 rounded-lg border text-left flex items-center gap-2 transition-all ${
-                            formData.selectedDay === slot
-                              ? 'bg-blue-600/30 border-blue-500 text-white'
-                              : 'bg-white/[0.02] border-white/5 text-slate-400 hover:text-white'
-                          }`}
+                          onClick={() => setIsCalendarOpen(true)}
+                          className="w-full rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2.5 text-left text-slate-300 hover:border-blue-500/60 hover:text-white transition-colors"
                         >
-                          <Clock className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                          <span className="truncate">{slot}</span>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="font-medium text-white">{selectedDateLabel}</span>
+                            <span className="text-[10px] uppercase tracking-wider text-slate-400">Pick date</span>
+                          </div>
                         </button>
-                      ))}
+                      </div>
+
+                      <div>
+                        <button
+                          type="button"
+                          disabled={Boolean(savedLeadId)}
+                          onClick={openTimePicker}
+                          className="w-full flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2.5 text-left text-slate-300 hover:border-blue-500/60 hover:text-white transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-blue-400" />
+                            <span className="font-medium text-white">{selectedTime}</span>
+                          </div>
+                          <span className="text-[10px] uppercase tracking-wider text-slate-400">Choose time</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -396,6 +538,212 @@ export const StrategyCallModal: React.FC<StrategyCallModalProps> = ({
                 </div>
               )}
             </form>
+
+            {isCalendarOpen && (
+              <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+                <div className="w-full max-w-2xl rounded-[28px] border border-sky-200/30 bg-[#dff1fb] p-4 text-slate-800 shadow-[0_25px_60px_rgba(15,23,42,0.35)]">
+                  <div className="mb-4 flex items-center justify-between px-1">
+                    <button
+                      type="button"
+                      onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1))}
+                      className="rounded-full p-2 text-2xl text-slate-700 hover:bg-slate-900/5"
+                    >
+                      ‹
+                    </button>
+                    <div className="text-3xl font-semibold tracking-tight text-slate-800">
+                      {calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1))}
+                      className="rounded-full p-2 text-2xl text-slate-700 hover:bg-slate-900/5"
+                    >
+                      ›
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-7 gap-1 pb-1 text-center text-sm font-medium text-slate-600">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                      <div key={day} className="py-1">{day}</div>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-7 gap-2">
+                    {calendarDays.map((dateValue, index) => {
+                      if (!dateValue) {
+                        return <div key={`empty-${index}`} className="h-14 rounded-xl bg-transparent" />;
+                      }
+
+                      const isCurrentMonth = dateValue.getMonth() === calendarMonth.getMonth();
+                      const isSelected = toDateKey(dateValue) === selectedDate;
+                      const isPast = dateValue < new Date(new Date().setHours(0, 0, 0, 0));
+                      const isAvailable = !isPast && isCurrentMonth;
+
+                      return (
+                        <button
+                          key={toDateKey(dateValue)}
+                          type="button"
+                          disabled={!isAvailable}
+                          onClick={() => {
+                            setSelectedDate(toDateKey(dateValue));
+                            setCalendarMonth(new Date(dateValue.getFullYear(), dateValue.getMonth(), 1));
+                            setIsCalendarOpen(false);
+                          }}
+                          className={`flex h-14 items-center justify-center rounded-full text-xl font-medium transition-all ${
+                            isSelected
+                              ? 'bg-[#8ad3ff] text-slate-900 shadow-[0_0_0_3px_rgba(138,211,255,0.5)]'
+                              : isAvailable
+                                ? 'text-slate-700 hover:bg-slate-900/5'
+                                : 'text-slate-400 cursor-not-allowed opacity-30'
+                          } ${!isCurrentMonth ? 'opacity-40' : ''}`}
+                        >
+                          {dateValue.getDate()}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isTimeModalOpen && (
+              <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+                <div className="w-full max-w-md rounded-[28px] border border-slate-200/30 bg-[#edf2f5] p-4 shadow-[0_25px_60px_rgba(15,23,42,0.35)] sm:p-5">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-xl bg-slate-200/80 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-700">
+                        USA Time
+                      </div>
+                      <span className="text-xs font-medium text-slate-500">
+                        {clockStage === 'hours' ? '1 of 2 · Select hour' : '2 of 2 · Select minutes'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsTimeModalOpen(false)}
+                      className="rounded-full p-2 text-slate-700 hover:bg-slate-900/5"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="mb-4 flex items-center justify-center gap-3">
+                    <div className="text-5xl font-medium tracking-tight text-slate-800">
+                      {formatClockTime(draftHour, draftMinute)}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {(['AM', 'PM'] as const).map((period) => (
+                        <button
+                          key={period}
+                          type="button"
+                          disabled={!clockHours.some((hour) => (hour >= 12 ? 'PM' : 'AM') === period)}
+                          onClick={() => {
+                            setDraftPeriod(period);
+                            const hoursForPeriod = clockHours.filter((hour) => (hour >= 12 ? 'PM' : 'AM') === period);
+                            const currentDialHour = draftHour % 12 || 12;
+                            const matchingHour = period === 'AM'
+                              ? currentDialHour === 12 ? 0 : currentDialHour
+                              : currentDialHour === 12 ? 12 : currentDialHour + 12;
+                            setDraftHour(hoursForPeriod.includes(matchingHour) ? matchingHour : hoursForPeriod[0] ?? draftHour);
+                            setDraftMinute(0);
+                            setClockStage('hours');
+                          }}
+                          className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+                            draftPeriod === period
+                              ? 'bg-slate-700 text-white'
+                              : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                          } disabled:cursor-not-allowed disabled:opacity-40`}
+                        >
+                          {period}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mx-auto mb-4 flex justify-center">
+                    <div className="relative h-[280px] w-[280px] rounded-full border-[10px] border-slate-200 bg-[#ecf4fb] shadow-inner sm:h-[300px] sm:w-[300px]">
+                      <div className="absolute inset-4 rounded-full border border-slate-300/60" />
+                      {Array.from({ length: 12 }, (_, index) => {
+                        const dialValue = index === 0 ? 12 : index;
+                        const angle = (index * 30 - 90) * (Math.PI / 180);
+                        const radius = 39;
+                        const x = 50 + Math.cos(angle) * radius;
+                        const y = 50 + Math.sin(angle) * radius;
+                        const hour24 = draftPeriod === 'AM'
+                          ? dialValue === 12 ? 0 : dialValue
+                          : dialValue === 12 ? 12 : dialValue + 12;
+                        const isActive = clockStage === 'hours' && draftHour === hour24;
+                        const isDisabled = clockStage === 'hours' && !clockHours.includes(hour24);
+                        const minute = index * 5;
+                        const isEndHour = draftHour === endHour;
+                        const isMinuteDisabled = clockStage === 'minutes' && isEndHour && minute !== 0;
+                        const isMinuteActive = clockStage === 'minutes' && draftMinute === minute;
+                        const label = clockStage === 'hours'
+                          ? String(dialValue)
+                          : String(minute).padStart(2, '0');
+
+                        return (
+                          <button
+                            key={index}
+                            type="button"
+                            disabled={isDisabled || isMinuteDisabled}
+                            onClick={() => {
+                              if (clockStage === 'hours') {
+                                chooseClockHour(hour24);
+                              } else {
+                                chooseClockMinute(minute);
+                              }
+                            }}
+                            className={`absolute z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-xs font-semibold transition-all ${
+                              isActive || isMinuteActive
+                                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30'
+                                : isDisabled || isMinuteDisabled
+                                  ? 'cursor-not-allowed text-slate-300'
+                                  : 'text-slate-700 hover:bg-blue-100 hover:text-blue-700'
+                            }`}
+                            style={{ left: `${x}%`, top: `${y}%` }}
+                            aria-label={clockStage === 'hours' ? `${dialValue} ${draftPeriod}` : `${label} minutes`}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+
+                      <div
+                        className="absolute left-1/2 top-1/2 h-[92px] w-[3px] origin-bottom rounded-full bg-slate-800"
+                        style={{
+                          transform: `translate(-50%, -100%) rotate(${clockStage === 'hours' ? (draftHour % 12) * 30 : draftMinute * 6}deg)`,
+                        }}
+                      />
+                      <div className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    {clockStage === 'minutes' ? (
+                      <button
+                        type="button"
+                        onClick={() => setClockStage('hours')}
+                        className="rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200"
+                      >
+                        Back to hours
+                      </button>
+                    ) : <span />}
+                    <button
+                      type="button"
+                      disabled={clockStage !== 'minutes'}
+                      onClick={() => {
+                        setSelectedTime(formatClockTime(draftHour, draftMinute));
+                        setIsTimeModalOpen(false);
+                      }}
+                      className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Confirm time
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {submissionError && (
               <p role="alert" className="mt-3 text-sm text-red-400">
